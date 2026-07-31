@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0B0B0E;
+  --foreground: #FAFAFC;
+  --primary-accent: #D4AF37;
+  --secondary-accent: #4A0E17;
+  --card-bg: rgba(18, 18, 24, 0.65);
+}
+
+/* Classic Luxury: Obsidian Gold & White */
+.theme-Classic-Luxury {
+  --background: #0B0B0E;
+  --foreground: #FAFAFC;
+  --primary-accent: #D4AF37;
+  --secondary-accent: #1A1A24;
+  --card-bg: rgba(18, 18, 24, 0.7);
+}
+
+/* Royal Burgundy: Deep Burgundy, Plum, Gold & Cream */
+.theme-Royal-Burgundy {
+  --background: #1A0407;
+  --foreground: #FDF8EA;
+  --primary-accent: #C5A059;
+  --secondary-accent: #4A0E17;
+  --card-bg: rgba(45, 8, 14, 0.65);
+}
+
+/* Midnight Black: Matte Black, Obsidian, Silver & White */
+.theme-Midnight-Black {
+  --background: #050505;
+  --foreground: #FAFAFC;
+  --primary-accent: #E5E5ED;
+  --secondary-accent: #121212;
+  --card-bg: rgba(18, 18, 18, 0.85);
+}
+
+/* Ivory Gold: Warm Ivory, Champagne Gold, Soft Gray & Silk White */
+.theme-Ivory-Gold {
+  --background: #FAF8F5;
+  --foreground: #2C2C30;
+  --primary-accent: #C5A059;
+  --secondary-accent: #E5E5ED;
+  --card-bg: rgba(255, 255, 255, 0.9);
+}
+
+/* Elegant Light: Silk White, Light Cream, Soft Gold & Charcoal */
+.theme-Elegant-Light {
+  --background: #F4F3EF;
+  --foreground: #1E1E24;
+  --primary-accent: #A38140;
+  --secondary-accent: #EAE8E2;
+  --card-bg: rgba(255, 255, 255, 0.95);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  selection-background-color: var(--primary-accent);
+  selection-color: var(--background);
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Custom Luxury Glassmorphism Utilities */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(197, 160, 89, 0.2);
+}
+
+.glass-panel-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  border-color: var(--primary-accent);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(197, 160, 89, 0.25);
+  transform: translateY(-3px);
+}
+
+.gold-text-gradient {
+  background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #C5A059 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.burgundy-text-gradient {
+  background: linear-gradient(135deg, #8C1B2D 0%, #4A0E17 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border-glow {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.1), 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+/* Custom Luxury Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0B0E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #262636;
+  border-radius: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
+
+/* Typography Overrides */
+.font-serif-luxury {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
