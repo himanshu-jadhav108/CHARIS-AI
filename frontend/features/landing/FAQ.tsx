@@ -22,7 +22,7 @@ export const FAQ: React.FC = () => {
     },
     {
       q: "How are deliveries handled for high-value items?",
-      a: "All items exceeding $10,000 are dispatched via private armored courier service with climate control and security personnel to ensure direct handover to the recipient."
+      a: "All items exceeding ₹2,50,000 are dispatched via private armored courier service with climate control and security personnel to ensure direct handover to the recipient."
     }
   ];
 

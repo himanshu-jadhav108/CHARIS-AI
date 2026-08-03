@@ -137,7 +137,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, onOpenProduc
 
                   <div className="pt-3 border-t border-gold-400/10 flex items-center justify-between">
                     <span className="font-serif-luxury font-bold text-base gold-text-gradient">
-                      ${p.price.toLocaleString()}
+                      ₹{p.price.toLocaleString('en-IN')}
                     </span>
                     <span className="text-[10px] font-mono text-gold-300 uppercase tracking-widest group-hover:translate-x-1 transition-transform">
                       VIEW ITEM →

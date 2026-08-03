@@ -57,6 +57,57 @@
   --card-bg: rgba(255, 255, 255, 0.95);
 }
 
+/* Light Theme Color Overrides */
+.theme-Ivory-Gold,
+.theme-Elegant-Light {
+  color: var(--foreground);
+}
+
+.theme-Ivory-Gold .text-silk-100,
+.theme-Elegant-Light .text-silk-100 {
+  color: #1A1A1E !important;
+}
+
+.theme-Ivory-Gold .text-silk-200,
+.theme-Elegant-Light .text-silk-200 {
+  color: #2C2C30 !important;
+}
+
+.theme-Ivory-Gold .text-silk-300,
+.theme-Elegant-Light .text-silk-300 {
+  color: #4A4A50 !important;
+}
+
+.theme-Ivory-Gold .text-silk-300\/75,
+.theme-Elegant-Light .text-silk-300\/75,
+.theme-Ivory-Gold .text-silk-300\/70,
+.theme-Elegant-Light .text-silk-300\/70 {
+  color: rgba(74, 74, 80, 0.75) !important;
+}
+
+.theme-Ivory-Gold .bg-obsidian-950,
+.theme-Elegant-Light .bg-obsidian-950,
+.theme-Ivory-Gold .bg-obsidian-900,
+.theme-Elegant-Light .bg-obsidian-900 {
+  background-color: var(--background) !important;
+}
+
+.theme-Ivory-Gold .bg-obsidian-850,
+.theme-Elegant-Light .bg-obsidian-850 {
+  background-color: var(--secondary-accent) !important;
+}
+
+.theme-Ivory-Gold .text-gold-300,
+.theme-Elegant-Light .text-gold-300 {
+  color: var(--primary-accent) !important;
+}
+
+.theme-Ivory-Gold .border-gold-400\/20,
+.theme-Elegant-Light .border-gold-400\/20 {
+  border-color: rgba(197, 160, 89, 0.3) !important;
+}
+
+
 body {
   background-color: var(--background);
   color: var(--foreground);

@@ -6,12 +6,14 @@ import { usePathname } from 'next/navigation';
 import { Sparkles, Crown, Compass, Bookmark, MessageSquare, User, Menu, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { useThemeStore } from '@/stores/useThemeStore';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { bookmarkedProducts } = useBookmarkStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useThemeStore();
 
   const navLinks = [
     { href: '/consult', label: 'AI Concierge', icon: Sparkles },
@@ -74,7 +76,7 @@ export const Navbar: React.FC = () => {
             {/* Bookmarks Counter */}
             <Link
               href="/catalog?bookmarked=true"
-              className="relative p-2.5 rounded-full bg-obsidian-850 border border-gold-400/20 text-silk-300/80 hover:text-gold-300 hover:border-gold-400/40 transition-colors"
+              className="relative p-2.5 rounded-full bg-obsidian-850 border border-gold-400/20 text-silk-300/80 hover:text-gold-300 hover:border-gold-400/40 transition-colors mr-2"
               title="Saved Gifts"
             >
               <Bookmark className="h-4 w-4" />
@@ -84,6 +86,21 @@ export const Navbar: React.FC = () => {
                 </span>
               )}
             </Link>
+
+            {/* Global Theme Selector */}
+            <div className="relative">
+              <select
+                value={theme}
+                onChange={(e) => setTheme(e.target.value as any)}
+                className="bg-obsidian-850 text-gold-300 text-[10px] uppercase tracking-wider font-mono border border-gold-400/30 rounded-full px-3.5 py-2 focus:outline-none focus:border-gold-400/60 cursor-pointer"
+              >
+                <option value="Classic-Luxury">Classic</option>
+                <option value="Royal-Burgundy">Burgundy</option>
+                <option value="Midnight-Black">Midnight</option>
+                <option value="Ivory-Gold">Ivory Gold (Light)</option>
+                <option value="Elegant-Light">Elegant Light</option>
+              </select>
+            </div>
 
             {/* Auth / User Badge */}
             {isAuthenticated && user ? (

@@ -124,7 +124,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 </h2>
 
                 <div className="font-serif-luxury text-2xl font-bold gold-text-gradient">
-                  ${product.price.toLocaleString()} USD
+                  ₹{product.price.toLocaleString('en-IN')} INR
                 </div>
 
                 <p className="text-xs sm:text-sm text-silk-300/80 leading-relaxed font-light">

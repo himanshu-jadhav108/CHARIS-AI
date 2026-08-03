@@ -68,7 +68,7 @@ export const GiftCard: React.FC<GiftCardProps> = ({ item, rank, onOpenProduct })
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono uppercase text-gold-400 tracking-widest">{product.category} • {product.brand}</span>
             <span className="font-serif-luxury font-bold text-lg gold-text-gradient">
-              ${product.price.toLocaleString()}
+              ₹{product.price.toLocaleString('en-IN')}
             </span>
           </div>
 
