@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { ChatMessage, PreferencesState, CuratedExperience } from '@/types';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface ConsultState {
   consultationId: string | null;
@@ -57,12 +58,20 @@ export const useConsultStore = create<ConsultState>((set, get) => ({
     });
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat/message', {
+      const user = useAuthStore.getState().user;
+      const token = user?.access_token || 'active_session_token';
+      const userId = user?.id || 'guest_vip';
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+
+      const res = await fetch(`${API_BASE}/chat/message`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           consultation_id: consultationId,
-          user_id: 'guest_vip',
+          user_id: userId,
           message: text
         })
       });

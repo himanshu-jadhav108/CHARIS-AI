@@ -5,6 +5,7 @@ import { Sparkles, Crown, Bookmark, ArrowRight, Heart, Star, ShieldCheck } from 
 import { RecommendationItem, Product } from '@/types';
 import { GlassCard } from '@/components/common/GlassCard';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface GiftCardProps {
   item: RecommendationItem;
@@ -15,6 +16,8 @@ interface GiftCardProps {
 export const GiftCard: React.FC<GiftCardProps> = ({ item, rank, onOpenProduct }) => {
   const { product, match_score, luxury_score, tailored_reason, emotional_meaning, story } = item;
   const { isBookmarked, toggleBookmark } = useBookmarkStore();
+  const { user } = useAuthStore();
+  const token = user?.access_token || 'active_session_token';
   const bookmarked = isBookmarked(product.id);
 
   const rankBadges = ["PINNACLE MATCH #1", "SELECTION #2", "SELECTION #3"];
@@ -38,7 +41,7 @@ export const GiftCard: React.FC<GiftCardProps> = ({ item, rank, onOpenProduct })
           </span>
 
           <button
-            onClick={() => toggleBookmark(product)}
+            onClick={() => toggleBookmark(product, token)}
             className={`p-2 rounded-full backdrop-blur-md border transition-all ${
               bookmarked
                 ? 'bg-gold-400 text-obsidian-950 border-gold-400 shadow-gold-glow'

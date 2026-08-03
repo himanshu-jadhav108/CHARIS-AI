@@ -1,17 +1,22 @@
-import uuid
-from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from typing import List, Dict, Any
 from app.core.database import get_db
 from app.models.consultation import Consultation, BookmarkedGift
 from app.models.product import Product
+from app.models.user import User
 from app.schemas.product import ProductResponse
+from app.api.auth import get_current_user
+import uuid
 
 router = APIRouter(prefix="/history", tags=["Consultation History & Bookmarks"])
 
 @router.get("/consultations")
-def get_user_consultations(user_id: str = Query("guest_vip"), db: Session = Depends(get_db)):
-    consultations = db.query(Consultation).filter(Consultation.user_id == user_id).order_by(Consultation.created_at.desc()).all()
+def get_user_consultations(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Retrieve all consultations for the authenticated user.
+    """
+    consultations = db.query(Consultation).filter(Consultation.user_id == user.id).order_by(Consultation.created_at.desc()).all()
     
     res = []
     for c in consultations:
@@ -29,8 +34,11 @@ def get_user_consultations(user_id: str = Query("guest_vip"), db: Session = Depe
     return res
 
 @router.get("/bookmarks")
-def get_bookmarked_gifts(user_id: str = Query("guest_vip"), db: Session = Depends(get_db)):
-    bookmarks = db.query(BookmarkedGift).filter(BookmarkedGift.user_id == user_id).all()
+def get_bookmarked_gifts(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Get all products bookmarked by the authenticated user.
+    """
+    bookmarks = db.query(BookmarkedGift).filter(BookmarkedGift.user_id == user.id).all()
     product_ids = [b.product_id for b in bookmarks]
     
     if not product_ids:
@@ -40,15 +48,17 @@ def get_bookmarked_gifts(user_id: str = Query("guest_vip"), db: Session = Depend
     return [ProductResponse.model_validate(p) for p in products]
 
 @router.post("/bookmarks/toggle")
-def toggle_bookmark(payload: Dict[str, Any], db: Session = Depends(get_db)):
-    user_id = payload.get("user_id", "guest_vip")
+def toggle_bookmark(payload: Dict[str, Any], user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Toggle bookmark status of a product for the authenticated user.
+    """
     product_id = payload.get("product_id")
     
     if not product_id:
         raise HTTPException(status_code=400, detail="product_id is required")
         
     existing = db.query(BookmarkedGift).filter(
-        BookmarkedGift.user_id == user_id, 
+        BookmarkedGift.user_id == user.id, 
         BookmarkedGift.product_id == product_id
     ).first()
     
@@ -59,7 +69,7 @@ def toggle_bookmark(payload: Dict[str, Any], db: Session = Depends(get_db)):
     else:
         new_bm = BookmarkedGift(
             id=f"bm_{uuid.uuid4().hex[:8]}",
-            user_id=user_id,
+            user_id=user.id,
             product_id=product_id
         )
         db.add(new_bm)

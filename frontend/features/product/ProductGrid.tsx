@@ -5,6 +5,7 @@ import { Search, Filter, Bookmark, Sparkles, Crown } from 'lucide-react';
 import { Product } from '@/types';
 import { GlassCard } from '@/components/common/GlassCard';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface ProductGridProps {
   products: Product[];
@@ -27,6 +28,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, onOpenProduc
   const [searchQuery, setSearchQuery] = useState('');
   
   const { isBookmarked, toggleBookmark } = useBookmarkStore();
+  const { user } = useAuthStore();
+  const token = user?.access_token || 'active_session_token';
 
   const filteredProducts = products.filter((p) => {
     const matchesCat = selectedCategory === 'All' || p.category === selectedCategory;
@@ -105,7 +108,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products, onOpenProduc
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleBookmark(p);
+                        toggleBookmark(p, token);
                       }}
                       className={`p-2 rounded-full backdrop-blur-md border ${
                         bookmarked ? 'bg-gold-400 text-obsidian-950 border-gold-400' : 'bg-obsidian-950/60 text-silk-100 border-gold-400/20'

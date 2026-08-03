@@ -7,6 +7,7 @@ import { GlassCard } from '@/components/common/GlassCard';
 import { Tilt3DCard } from '@/components/3d/Tilt3DCard';
 import { MemoryBoxCard } from './MemoryBoxCard';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 interface CuratedExperienceCardProps {
   experience: CuratedExperience;
@@ -27,6 +28,8 @@ export const CuratedExperienceCard: React.FC<CuratedExperienceCardProps> = ({
   const [showMemoryBox, setShowMemoryBox] = useState(false);
 
   const { isBookmarked, toggleBookmark } = useBookmarkStore();
+  const { user } = useAuthStore();
+  const token = user?.access_token || 'active_session_token';
   const bookmarked = isBookmarked(product.id);
 
   const rankTitles = ["CURATED PINNACLE EXPERIENCE #1", "CURATED ALTERNATIVE EXPERIENCE #2", "CURATED ARTISANAL EXPERIENCE #3"];
@@ -60,7 +63,7 @@ export const CuratedExperienceCard: React.FC<CuratedExperienceCardProps> = ({
               <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-transparent to-transparent" />
 
               <button
-                onClick={() => toggleBookmark(product)}
+                onClick={() => toggleBookmark(product, token)}
                 className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md border transition-all ${
                   bookmarked ? 'bg-gold-400 text-obsidian-950 border-gold-400' : 'bg-obsidian-950/60 text-silk-100 border-gold-400/20'
                 }`}

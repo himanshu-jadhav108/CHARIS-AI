@@ -15,12 +15,16 @@ class Settings(BaseModel):
     
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     
-    DATABASE_URL: str = "sqlite:///./charis_luxury.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./charis_luxury.db")
+    
+    SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+    SUPABASE_JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET", "")
     
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://*.vercel.app"
+        "https://charis-luxury.vercel.app"
     ]
 
 settings = Settings()

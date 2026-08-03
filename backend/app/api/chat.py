@@ -7,11 +7,13 @@ from app.models.consultation import Consultation
 from app.schemas.chat import ChatRequest, PreferencesState, ChatMessage
 from app.agents.concierge_agent import concierge_agent
 from app.recommendation.recommendation_engine import recommendation_engine
+from app.api.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter(prefix="/chat", tags=["AI Concierge Chat"])
 
 @router.post("/message")
-def send_chat_message(payload: ChatRequest, db: Session = Depends(get_db)):
+def send_chat_message(payload: ChatRequest, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """
     Process incoming user turn in gift consultation, analyze emotional intent,
     build recipient profile, and return response + curated experiences if complete.
@@ -22,7 +24,7 @@ def send_chat_message(payload: ChatRequest, db: Session = Depends(get_db)):
     if not consultation:
         consultation = Consultation(
             id=consultation_id,
-            user_id=payload.user_id,
+            user_id=user.id,
             title="Sovereign Gift Consultation",
             status="active",
             preferences={},
@@ -32,6 +34,8 @@ def send_chat_message(payload: ChatRequest, db: Session = Depends(get_db)):
         db.add(consultation)
         db.commit()
         db.refresh(consultation)
+    elif consultation.user_id != user.id:
+        raise HTTPException(status_code=403, detail="Unauthorized access to this consultation")
 
     chat_history_data = consultation.chat_history or []
     history_objs = [ChatMessage(**m) for m in chat_history_data]
@@ -59,7 +63,7 @@ def send_chat_message(payload: ChatRequest, db: Session = Depends(get_db)):
         user_message=payload.message,
         current_prefs=current_prefs,
         chat_history=history_objs,
-        user_id=payload.user_id,
+        user_id=user.id,
         db=db
     )
 
@@ -81,7 +85,9 @@ def send_chat_message(payload: ChatRequest, db: Session = Depends(get_db)):
             db=db,
             preferences=updated_prefs,
             emotion_data=emotion_data,
-            recipient_profile=recipient_profile
+            recipient_profile=recipient_profile,
+            user_id=user.id,
+            consultation_id=consultation_id
         )
         recommendations_payload = recs
         consultation.recommended_product_ids = [r["product"]["id"] for r in recs]

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Crown, ShieldCheck, Bookmark, Share2, Star, CheckCircle, Truck, Heart, ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import Link from 'next/link';
 
 interface ProductDetailModalProps {
@@ -18,6 +19,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
   const [acquisitionSuccess, setAcquisitionSuccess] = useState(false);
 
   const { isBookmarked, toggleBookmark } = useBookmarkStore();
+  const { user } = useAuthStore();
+  const token = user?.access_token || 'active_session_token';
 
   if (!product) return null;
 
@@ -109,7 +112,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                       <Share2 className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => toggleBookmark(product)}
+                      onClick={() => toggleBookmark(product, token)}
                       className={`p-2 rounded-full border transition-all ${
                         bookmarked ? 'bg-gold-400 text-obsidian-950 border-gold-400' : 'bg-obsidian-850 border-gold-400/20 text-silk-300 hover:text-gold-300'
                       }`}

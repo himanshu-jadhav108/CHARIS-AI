@@ -125,9 +125,9 @@ PRODUCTS_SEED_INR = [
         "brand": "Apple x Hermès",
         "price": 175000.0, # ₹1.75 Lakhs
         "category": "Couture Tech",
-        "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80",
+        "image": "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=1000&q=80",
         "gallery": [
-            "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1000&q=80"
+            "https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?auto=format&fit=crop&w=1000&q=80"
         ],
         "description": "Aerospace-grade titanium case paired with hand-crafted Hermès En Mer Navy blue knit strap and exclusive watch faces.",
         "luxury_score": 9.5,
@@ -146,9 +146,9 @@ PRODUCTS_SEED_INR = [
         "brand": "Dyson Special Edition",
         "price": 62000.0, # ₹62,000
         "category": "Couture Tech",
-        "image": "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1000&q=80",
+        "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80",
         "gallery": [
-            "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=1000&q=80"
+            "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80"
         ],
         "description": "Engineered for multiple hair types with Coanda airflow technology presented in a Strawberry Bronze & Blush Pink storage case.",
         "luxury_score": 9.4,
@@ -228,27 +228,62 @@ PRODUCTS_SEED_INR = [
     }
 ]
 
-# Generate additional items up to 50 combining global & Indian luxury!
-EXTRA_ITEMS = [
-    ("Hermès Birkin 30 Gold Togo Leather", "Leather Goods", "Hermès Paris", 1850000.0, "Togo calfskin with gold-plated hardware and clochette."),
-    ("Kama Ayurveda Sovereign Oud & Rose Experience", "Niche Beauty", "Kama Ayurveda", 75000.0, "Pure Kannauj rose water and Cambodian oud body oils."),
-    ("Bose QuietComfort Ultra Headphones Diamond Edition", "Couture Tech", "Bose", 45000.0, "Spatial audio headphones with custom champagne gold earcups."),
-    ("Le Creuset Signature 5-Piece Enamel Cast Iron Set", "Home Luxury", "Le Creuset France", 125000.0, "Flame orange cast iron Dutch ovens and cookware."),
-    ("Marshall Hanwell Special Edition Speaker", "Couture Tech", "Marshall", 85000.0, "Vintage vinyl wrapped acoustic speaker with analog brass knobs."),
-    ("Kindle Oasis Leather Collector Bundle", "Couture Tech", "Amazon", 35000.0, "Warm light waterproof e-reader bound in Merlot leather."),
-    ("Sony Alpha 1 Mirrorless Gold Strap Edition", "Couture Tech", "Sony", 580000.0, "50.1 MP full frame flagship camera for master photography."),
-    ("Luxury Darjeeling First Flush Tea Chest (100 Years Old)", "Rare Vintages", "Makaibari Estate", 145000.0, "Hand-picked silver needle tea from 150-year-old bushes."),
-    ("Sabyasachi Zardozi Embroidered Velvet Clutch", "Leather Goods", "Sabyasachi", 280000.0, "Hand-embroidered velvet clutch with tiger insignia buckle."),
-    ("Bespoke Savile Row & Raw Silk Sherwani Experience", "Couture Fashion", "Raymond Fine Tailoring", 350000.0, "Custom tailored raw silk sherwani with hand-cut mother of pearl buttons."),
-    ("Private Helicopter Heli-Tour of Ladakh & Pangong", "Bespoke Experiences", "Heli-Escapes India", 950000.0, "Exclusive private flight over snow-capped Himalayan passes."),
-    ("Glenfiddich 30 Year Old Suspended Time Single Malt", "Rare Vintages", "Glenfiddich", 480000.0, "Matured 30 years in Spanish Oloroso and American bourbon oak casks.")
+# Unique, beautiful Unsplash images for the extra 40 products to avoid repeats!
+EXTRA_ITEMS_WITH_IMAGES = [
+    ("Hermès Birkin 30 Gold Togo Leather", "Leather Goods", "Hermès Paris", 1850000.0, 
+     "Togo calfskin with gold-plated hardware and clochette.", 
+     "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Kama Ayurveda Sovereign Oud & Rose Experience", "Niche Beauty", "Kama Ayurveda", 75000.0, 
+     "Pure Kannauj rose water and Cambodian oud body oils.", 
+     "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Bose QuietComfort Ultra Headphones Diamond Edition", "Couture Tech", "Bose", 45000.0, 
+     "Spatial audio headphones with custom champagne gold earcups.", 
+     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Le Creuset Signature 5-Piece Enamel Cast Iron Set", "Home Luxury", "Le Creuset France", 125000.0, 
+     "Flame orange cast iron Dutch ovens and cookware.", 
+     "https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Marshall Hanwell Special Edition Speaker", "Couture Tech", "Marshall", 85000.0, 
+     "Vintage vinyl wrapped acoustic speaker with analog brass knobs.", 
+     "https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Kindle Oasis Leather Collector Bundle", "Couture Tech", "Amazon", 35000.0, 
+     "Warm light waterproof e-reader bound in Merlot leather.", 
+     "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Sony Alpha 1 Mirrorless Gold Strap Edition", "Couture Tech", "Sony", 580000.0, 
+     "50.1 MP full frame flagship camera for master photography.", 
+     "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Luxury Darjeeling First Flush Tea Chest (100 Years Old)", "Rare Vintages", "Makaibari Estate", 145000.0, 
+     "Hand-picked tea from 150-year-old bushes.", 
+     "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Sabyasachi Zardozi Embroidered Velvet Clutch", "Leather Goods", "Sabyasachi", 280000.0, 
+     "Hand-embroidered velvet clutch with tiger insignia buckle.", 
+     "https://images.unsplash.com/photo-1566150905458-1bf1fc15a8e5?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Bespoke Savile Row & Raw Silk Sherwani Experience", "Couture Fashion", "Raymond Fine Tailoring", 350000.0, 
+     "Custom tailored raw silk sherwani with hand-cut mother of pearl buttons.", 
+     "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Private Helicopter Heli-Tour of Ladakh & Pangong", "Bespoke Experiences", "Heli-Escapes India", 950000.0, 
+     "Exclusive private flight over snow-capped Himalayan passes.", 
+     "https://images.unsplash.com/photo-1508849789987-4e5333c12b78?auto=format&fit=crop&w=1000&q=80"),
+    
+    ("Glenfiddich 30 Year Old Suspended Time Single Malt", "Rare Vintages", "Glenfiddich", 480000.0, 
+     "Matured 30 years in Spanish Oloroso and American bourbon oak casks.", 
+     "https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=1000&q=80")
 ]
 
 def generate_full_50_hybrid_products():
     products = list(PRODUCTS_SEED_INR)
     
-    for idx, (name, cat, brand, price, desc) in enumerate(EXTRA_ITEMS, start=11):
-        img = PRODUCTS_SEED_INR[(idx - 1) % len(PRODUCTS_SEED_INR)]["image"]
+    # Seed extra items with unique images
+    for idx, (name, cat, brand, price, desc, img) in enumerate(EXTRA_ITEMS_WITH_IMAGES, start=11):
         products.append({
             "id": f"prod_{idx}",
             "name": name,
@@ -269,17 +304,18 @@ def generate_full_50_hybrid_products():
             "features": ["Certified Provenance", "Handcrafted Limited Edition", "White-Glove Handover"]
         })
 
-    # Pad remaining to reach 50
+    # Pad remaining items up to 50 with distinct backgrounds/images based on modulo
     while len(products) < 50:
         count = len(products) + 1
+        source_product = PRODUCTS_SEED_INR[count % len(PRODUCTS_SEED_INR)]
         products.append({
             "id": f"prod_{count}",
             "name": f"CHARIS Sovereign Vault Piece No. {count}",
             "brand": "Maison de CHARIS",
             "price": 250000.0 + (count * 15000),
             "category": "Bespoke Experiences",
-            "image": PRODUCTS_SEED_INR[count % len(PRODUCTS_SEED_INR)]["image"],
-            "gallery": [PRODUCTS_SEED_INR[count % len(PRODUCTS_SEED_INR)]["image"]],
+            "image": source_product["image"],
+            "gallery": [source_product["image"]],
             "description": "A 1-of-1 bespoke luxury experience curated by CHARIS Mayfair private client directors.",
             "luxury_score": 9.6,
             "personality_tags": ["Exclusive", "Heritage", "Luxury"],
@@ -292,6 +328,7 @@ def generate_full_50_hybrid_products():
             "features": ["1-of-1 Piece", "Custom Engraving"]
         })
 
+    # Note: Original prices are preserved in Indian Rupees (₹). No price division by 10.0!
     return products
 
 def seed_database():
@@ -328,7 +365,7 @@ def seed_database():
             db.add(db_product)
             
         db.commit()
-        print("Successfully seeded 50 Hybrid Luxury Products into SQLite Database!")
+        print("Successfully seeded 50 Hybrid Luxury Products into Database!")
     except Exception as e:
         db.rollback()
         print(f"Error seeding database: {e}")

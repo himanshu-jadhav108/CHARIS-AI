@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { useConsultStore } from '@/stores/useConsultStore';
 import { ChatBox } from '@/features/chat/ChatBox';
 import { PreferenceSidebar } from '@/features/chat/PreferenceSidebar';
@@ -11,9 +13,29 @@ import { GlassCard } from '@/components/common/GlassCard';
 import { Crown, Sparkles, UserCheck, UserPlus } from 'lucide-react';
 
 export default function ConsultPage() {
+  const { isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/auth');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
   const { preferences, isComplete, recommendations, resetConsultation, sendMessage } = useConsultStore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [recipientChosen, setRecipientChosen] = useState(false);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-3">
+        <Sparkles className="h-8 w-8 text-gold-400 animate-spin" />
+        <p className="text-xs font-mono text-gold-300">Establishing Secure Channel...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return null;
 
   const savedRecipients = [
     { name: 'Ananya Sharma', relationship: 'Mother', details: 'Luxury Tea Collector • B-Day 14 Oct' },

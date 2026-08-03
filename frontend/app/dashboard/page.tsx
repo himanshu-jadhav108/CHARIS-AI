@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Crown, Sparkles, Plus, Clock, Bookmark, Calendar, ArrowRight, UserPlus, Heart, BookOpen, Compass, Award } from 'lucide-react';
 import { GlassCard } from '@/components/common/GlassCard';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
+import { fetchRecipientsApi, createRecipientApi } from '@/services/api';
 
 interface RecipientProfileData {
   id: string;
@@ -28,7 +30,16 @@ interface RecipientProfileData {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const router = useRouter();
+
+  // Enforce route guard check on mount
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/auth');
+    }
+  }, [isAuthenticated, authLoading, router]);
+
   const { bookmarkedProducts } = useBookmarkStore();
   const [recipientModalOpen, setRecipientModalOpen] = useState(false);
   const [selectedRecipient, setSelectedRecipient] = useState<RecipientProfileData | null>(null);
@@ -37,104 +48,184 @@ export default function DashboardPage() {
   const [newRecName, setNewRecName] = useState('');
   const [newRecRel, setNewRecRel] = useState('Partner');
 
-  // Relatable Indian & International Demo Personas
-  const [recipients, setRecipients] = useState<RecipientProfileData[]>([
-    {
-      id: 'rec_ananya',
-      name: 'Ananya Sharma',
-      relationship: 'Mother',
-      lifestyle: 'Luxury Tea Collector • Loves Gardening',
-      birthday: '14 October',
-      anniversary: '20 November',
-      profession: 'Botanist & Tea Sommelier',
-      interests: ['Organic Farming', 'Traditional Indian Textiles', 'Classical Music'],
-      hobbies: ['Rare Rose Breeding', 'Gourmet Tea Blending'],
-      favourite_brands: ['Forest Essentials', 'Sabyasachi', 'Fortnum & Mason'],
-      favourite_colours: ['Emerald Green', 'Marigold Yellow'],
-      luxury_style: 'Understated Organic Luxury',
-      last_gift: 'Luxury Tea Collection',
-      notes: 'Values handcrafted detailing and subtle floral aromas.',
-      avatar_color: 'bg-emerald-800',
-      timeline: [
-        { year: '2024', gift: 'Pure Silver Tea Strainer & Rare Darjeeling Blend', occasion: 'Mother\'s Day' },
-        { year: '2025', gift: 'Sabyasachi Banarasi Monogrammed Silk Scarf', occasion: 'Diwali Celebration' },
-        { year: '2026', gift: 'Forest Essentials Heritage Wellness Ritual Box', occasion: 'Birthday' }
-      ]
-    },
-    {
-      id: 'rec_rajiv',
-      name: 'Rajiv Malhotra',
-      relationship: 'Father',
-      lifestyle: 'Entrepreneur & Fine Horology Enthusiast',
-      birthday: '03 December',
-      profession: 'Tech Founder & Investor',
-      interests: ['Vintage Automobiles', 'Modern Architecture', 'Philanthropy'],
-      hobbies: ['Watch Customization', 'Playing Squash'],
-      favourite_brands: ['Vacheron Constantin', 'Montblanc', 'Titan Edge'],
-      favourite_colours: ['Royal Navy Blue', 'Champagne Gold'],
-      luxury_style: 'Mechanical Precision & Heritage Icons',
-      last_gift: 'Titan Edge Watch',
-      notes: 'Appreciates clean structural lines and timeless craftsmanship.',
-      avatar_color: 'bg-amber-700',
-      timeline: [
-        { year: '2024', gift: 'Montblanc Meisterstück Gold-Coated Fountain Pen', occasion: 'Promotion' },
-        { year: '2025', gift: 'Titan Edge Ceramic Ultra-Thin Timepiece', occasion: 'Father\'s Day' },
-        { year: '2026', gift: 'Vacheron Constantin Overseas Dual Time Chronograph', occasion: '60th Birthday' }
-      ]
-    },
-    {
-      id: 'rec_meera',
-      name: 'Meera Khanna',
-      relationship: 'Wife',
-      lifestyle: 'Architect & Contemporary Art Collector',
-      birthday: '22 January',
-      anniversary: '18 February',
-      profession: 'Principal Interior Architect',
-      interests: ['Abstract Sculptures', 'Sustainable Design', 'Indie Cinema'],
-      hobbies: ['Clay Sculpting', 'Charcoal Sketching'],
-      favourite_brands: ['Hermès', 'Le Creuset', 'Cartier'],
-      favourite_colours: ['Matte Black', 'Crimson Red'],
-      luxury_style: 'Avant-Garde Architectural Design',
-      last_gift: 'Heritage Painting',
-      notes: 'Fascinated by bold geometric proportions and functional art pieces.',
-      avatar_color: 'bg-purple-800',
-      timeline: [
-        { year: '2024', gift: 'Le Creuset Signature Cast Iron French Oven Set', occasion: 'Griha Pravesh' },
-        { year: '2025', gift: 'Hermès Custom Calfskin Leather Sketchbook', occasion: 'Anniversary' },
-        { year: '2026', gift: 'Cartier Trinity Diamond Paved Gold Ring', occasion: 'Valentine\'s Gesture' }
-      ]
+  const [recipients, setRecipients] = useState<RecipientProfileData[]>([]);
+  const [loadingRec, setLoadingRec] = useState(true);
+
+  // Sync and lazily seed registered recipients from PostgreSQL
+  useEffect(() => {
+    if (!authLoading && isAuthenticated && user) {
+      const token = user.access_token || 'active_session_token';
+      fetchRecipientsApi(token).then(async (data) => {
+        if (data && data.length > 0) {
+          const mapped = data.map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            relationship: r.relationship,
+            lifestyle: r.lifestyle || 'Custom preference dossier profile',
+            birthday: r.birthday || 'TBD',
+            anniversary: r.anniversary || '',
+            profession: r.lifestyle ? r.lifestyle.split('•')[0].trim() : 'Refined Society',
+            interests: r.hobbies || [],
+            hobbies: r.hobbies || [],
+            favourite_brands: r.favourite_brands || [],
+            favourite_colours: r.favourite_colours || [],
+            luxury_style: r.luxury_preference || 'Sophisticated Curation',
+            last_gift: r.relationship === 'Mother' ? 'Luxury Tea Collection' : r.relationship === 'Father' ? 'Titan Edge Watch' : r.relationship === 'Wife' ? 'Heritage Painting' : 'None yet',
+            notes: r.personal_notes || '',
+            avatar_color: r.relationship === 'Mother' ? 'bg-emerald-800' : r.relationship === 'Father' ? 'bg-amber-700' : 'bg-purple-800',
+            timeline: r.relationship === 'Mother' ? [
+              { year: '2024', gift: 'Pure Silver Tea Strainer & Rare Darjeeling Blend', occasion: "Mother's Day" },
+              { year: '2025', gift: 'Sabyasachi Banarasi Monogrammed Silk Scarf', occasion: 'Diwali Celebration' }
+            ] : r.relationship === 'Father' ? [
+              { year: '2024', gift: 'Montblanc Meisterstück Gold-Coated Fountain Pen', occasion: 'Promotion' },
+              { year: '2025', gift: 'Titan Edge Ceramic Ultra-Thin Timepiece', occasion: "Father's Day" }
+            ] : [
+              { year: '2024', gift: 'Le Creuset Signature Cast Iron French Oven Set', occasion: 'Griha Pravesh' },
+              { year: '2025', gift: 'Hermès Custom Calfskin Leather Sketchbook', occasion: 'Anniversary' }
+            ]
+          }));
+          setRecipients(mapped);
+          setLoadingRec(false);
+        } else {
+          // Empty DB: Seed premium demo profiles
+          const demoPersonas = [
+            {
+              name: 'Ananya Sharma',
+              relationship: 'Mother',
+              lifestyle: 'Luxury Tea Collector • Loves Gardening',
+              birthday: '2026-10-14',
+              anniversary: '2026-11-20',
+              favourite_brands: ['Forest Essentials', 'Sabyasachi', 'Fortnum & Mason'],
+              favourite_colours: ['Emerald Green', 'Marigold Yellow'],
+              hobbies: ['Rare Rose Breeding', 'Gourmet Tea Blending'],
+              luxury_preference: 'Understated Organic Luxury',
+              personal_notes: 'Values handcrafted detailing and subtle floral aromas.'
+            },
+            {
+              name: 'Rajiv Malhotra',
+              relationship: 'Father',
+              lifestyle: 'Entrepreneur & Fine Horology Enthusiast',
+              birthday: '2026-12-03',
+              favourite_brands: ['Vacheron Constantin', 'Montblanc', 'Titan Edge'],
+              favourite_colours: ['Royal Navy Blue', 'Champagne Gold'],
+              hobbies: ['Watch Customization', 'Playing Squash'],
+              luxury_preference: 'Mechanical Precision & Heritage Icons',
+              personal_notes: 'Appreciates clean structural lines and transatlantic precision.'
+            },
+            {
+              name: 'Meera Khanna',
+              relationship: 'Wife',
+              lifestyle: 'Architect & Contemporary Art Collector',
+              birthday: '2026-01-22',
+              anniversary: '2026-02-18',
+              favourite_brands: ['Hermès', 'Le Creuset', 'Cartier'],
+              favourite_colours: ['Matte Black', 'Crimson Red'],
+              hobbies: ['Clay Sculpting', 'Charcoal Sketching'],
+              luxury_preference: 'Avant-Garde Architectural Design',
+              personal_notes: 'Fascinated by bold geometric proportions and functional art pieces.'
+            }
+          ];
+
+          const created = [];
+          for (const d of demoPersonas) {
+            try {
+              const res = await createRecipientApi(d, token);
+              created.push({
+                id: res.id,
+                name: res.name,
+                relationship: res.relationship,
+                lifestyle: res.lifestyle,
+                birthday: res.birthday,
+                anniversary: res.anniversary || '',
+                profession: res.relationship === 'Mother' ? 'Botanist & Tea Sommelier' : res.relationship === 'Father' ? 'Tech Founder & Investor' : 'Principal Interior Architect',
+                interests: res.hobbies || [],
+                hobbies: res.hobbies || [],
+                favourite_brands: res.favourite_brands || [],
+                favourite_colours: res.favourite_colours || [],
+                luxury_style: res.luxury_preference,
+                last_gift: res.relationship === 'Mother' ? 'Luxury Tea Collection' : res.relationship === 'Father' ? 'Titan Edge Watch' : 'Heritage Painting',
+                notes: res.personal_notes,
+                avatar_color: res.relationship === 'Mother' ? 'bg-emerald-800' : res.relationship === 'Father' ? 'bg-amber-700' : 'bg-purple-800',
+                timeline: res.relationship === 'Mother' ? [
+                  { year: '2024', gift: 'Pure Silver Tea Strainer & Rare Darjeeling Blend', occasion: "Mother's Day" },
+                  { year: '2025', gift: 'Sabyasachi Banarasi Monogrammed Silk Scarf', occasion: 'Diwali Celebration' }
+                ] : res.relationship === 'Father' ? [
+                  { year: '2024', gift: 'Montblanc Meisterstück Gold-Coated Fountain Pen', occasion: 'Promotion' },
+                  { year: '2025', gift: 'Titan Edge Ceramic Ultra-Thin Timepiece', occasion: "Father's Day" }
+                ] : [
+                  { year: '2024', gift: 'Le Creuset Signature Cast Iron French Oven Set', occasion: 'Griha Pravesh' },
+                  { year: '2025', gift: 'Hermès Custom Calfskin Leather Sketchbook', occasion: 'Anniversary' }
+                ]
+              });
+            } catch (err) {
+              console.error("Failed to seed recipient in db", err);
+            }
+          }
+          setRecipients(created);
+          setLoadingRec(false);
+        }
+      }).catch((err) => {
+        console.error("Error loading recipients", err);
+        setLoadingRec(false);
+      });
     }
-  ]);
+  }, [authLoading, isAuthenticated, user]);
 
   const upcomingOccasions = [
     { name: "Ananya's Royal Tea Curation", daysLeft: 6, target: "Ananya Sharma" },
     { name: "Rajiv's Milestone Jubilee", daysLeft: 18, target: "Rajiv Malhotra" }
   ];
 
-  const handleAddRecipient = (e: React.FormEvent) => {
+  const handleAddRecipient = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newRecName) return;
-    const newRec: RecipientProfileData = {
-      id: `rec_${Date.now()}`,
+    if (!newRecName || !user) return;
+    
+    const token = user.access_token || 'active_session_token';
+    const payload = {
       name: newRecName,
       relationship: newRecRel,
       lifestyle: 'Custom preference dossier profile',
-      birthday: 'TBD',
-      profession: 'Not specified',
-      interests: [],
-      hobbies: [],
-      favourite_brands: [],
-      favourite_colours: [],
-      luxury_style: 'Sophisticated Curation',
-      last_gift: 'None yet',
-      notes: 'Added fresh contact.',
-      avatar_color: 'bg-indigo-850',
-      timeline: []
+      luxury_preference: 'Sophisticated Curation',
+      personal_notes: 'Added fresh contact.'
     };
-    setRecipients([...recipients, newRec]);
-    setNewRecName('');
-    setRecipientModalOpen(false);
+
+    try {
+      const res = await createRecipientApi(payload, token);
+      const newRec: RecipientProfileData = {
+        id: res.id,
+        name: res.name,
+        relationship: res.relationship,
+        lifestyle: res.lifestyle,
+        birthday: 'TBD',
+        profession: 'Not specified',
+        interests: [],
+        hobbies: [],
+        favourite_brands: [],
+        favourite_colours: [],
+        luxury_style: res.luxury_preference,
+        last_gift: 'None yet',
+        notes: res.personal_notes,
+        avatar_color: 'bg-indigo-850',
+        timeline: []
+      };
+      setRecipients([...recipients, newRec]);
+      setNewRecName('');
+      setRecipientModalOpen(false);
+    } catch (err) {
+      console.error("Failed to save recipient to db", err);
+    }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center space-y-3">
+        <Sparkles className="h-8 w-8 text-gold-400 animate-spin" />
+        <p className="text-xs font-mono text-gold-300">Establishing Secure VIP Lounge...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">

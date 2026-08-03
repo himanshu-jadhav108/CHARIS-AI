@@ -1,20 +1,27 @@
-import uuid
-from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+from typing import List, Dict, Any
 from app.core.database import get_db
 from app.models.consultation import Recipient
+from app.models.user import User
+from app.api.auth import get_current_user
+import uuid
 
 router = APIRouter(prefix="/recipients", tags=["Recipient Management"])
 
 @router.get("")
-def get_recipients(user_id: str = Query("guest_vip"), db: Session = Depends(get_db)):
-    recipients = db.query(Recipient).filter(Recipient.user_id == user_id).order_by(Recipient.created_at.desc()).all()
+def get_recipients(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Retrieve all recipients for the authenticated user.
+    """
+    recipients = db.query(Recipient).filter(Recipient.user_id == user.id).order_by(Recipient.created_at.desc()).all()
     return recipients
 
 @router.post("")
-def create_recipient(payload: Dict[str, Any], db: Session = Depends(get_db)):
-    user_id = payload.get("user_id", "guest_vip")
+def create_recipient(payload: Dict[str, Any], user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Create a new recipient profile for the authenticated user.
+    """
     name = payload.get("name")
     relationship = payload.get("relationship")
     
@@ -23,7 +30,7 @@ def create_recipient(payload: Dict[str, Any], db: Session = Depends(get_db)):
 
     rec = Recipient(
         id=f"rec_{uuid.uuid4().hex[:8]}",
-        user_id=user_id,
+        user_id=user.id,
         name=name,
         relationship=relationship,
         birthday=payload.get("birthday"),
@@ -42,10 +49,13 @@ def create_recipient(payload: Dict[str, Any], db: Session = Depends(get_db)):
     return rec
 
 @router.put("/{rec_id}")
-def update_recipient(rec_id: str, payload: Dict[str, Any], db: Session = Depends(get_db)):
-    rec = db.query(Recipient).filter(Recipient.id == rec_id).first()
+def update_recipient(rec_id: str, payload: Dict[str, Any], user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Update a recipient profile, enforcing ownership.
+    """
+    rec = db.query(Recipient).filter(Recipient.id == rec_id, Recipient.user_id == user.id).first()
     if not rec:
-        raise HTTPException(status_code=404, detail="Recipient not found")
+        raise HTTPException(status_code=404, detail="Recipient not found or unauthorized")
         
     for key, val in payload.items():
         if hasattr(rec, key):
@@ -56,10 +66,13 @@ def update_recipient(rec_id: str, payload: Dict[str, Any], db: Session = Depends
     return rec
 
 @router.delete("/{rec_id}")
-def delete_recipient(rec_id: str, db: Session = Depends(get_db)):
-    rec = db.query(Recipient).filter(Recipient.id == rec_id).first()
+def delete_recipient(rec_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Delete a recipient profile, enforcing ownership.
+    """
+    rec = db.query(Recipient).filter(Recipient.id == rec_id, Recipient.user_id == user.id).first()
     if not rec:
-        raise HTTPException(status_code=404, detail="Recipient not found")
+        raise HTTPException(status_code=404, detail="Recipient not found or unauthorized")
         
     db.delete(rec)
     db.commit()

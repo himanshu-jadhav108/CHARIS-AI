@@ -13,6 +13,7 @@ from app.services.prompt_builder import PromptBuilder
 from app.services.response_validator import ResponseValidator
 from app.services.luxury_formatter import LuxuryFormatter
 from app.services.observability import ObservabilityTracker
+from app.models.consultation import Recipient
 
 class ConciergeAgent:
     """
@@ -104,30 +105,56 @@ class ConciergeAgent:
         # Check turn completeness
         is_complete = user_turns_count >= 4 or (updated_prefs.get("recipient") and updated_prefs.get("occasion") and updated_prefs.get("budget"))
 
+        # 4. Resolve recipient_id dynamically from the database
+        recipient_id = None
+        recipient_name = updated_prefs.get("recipient")
+        if recipient_name and db:
+            # Match registered recipient by name prefix or substring for RLS continuity
+            db_rec = db.query(Recipient).filter(
+                Recipient.user_id == user_id,
+                Recipient.name.ilike(f"%{recipient_name}%")
+            ).first()
+            if db_rec:
+                recipient_id = db_rec.id
+
         if is_complete:
             rec = updated_prefs.get("recipient", "your recipient")
             occ = updated_prefs.get("occasion", "this special celebration")
             
-            # Check user memory for past contextual note
-            mem_note = user_memory_service.generate_memory_context_note(user_id, rec)
-            mem_prefix = f"\n\n({mem_note})" if mem_note else ""
+            # Fetch contextual details using resolved recipient_id
+            context_builder = ContextBuilder(db) if db else None
+            context = context_builder.build_context(user_id, recipient_id) if context_builder else {}
+            
+            # Use Gemini to generate a personalized closing concierge summary pitch
+            prompt_content = f"""
+You are CHARIS — the ultra-luxury Private Client Director.
+We have completed the consultation. Based on our dialogue and client registry, we are ready to reveal the curated top 3 recommendations.
 
-            response = (
-                f"Splendid. I have crafted a comprehensive emotional profile for {rec}, "
-                f"capturing their intent of {emotion_data['primary_emotion']} for {occ}.{mem_prefix}\n\n"
-                f"Allow me to prepare CHARIS's curated luxury gift experiences for you."
-            )
-            return response, updated_prefs, emotion_data, recipient_profile, True, []
+Write a concluding response that:
+1. Summarizes the emotional intent ({emotion_data.get('primary_emotion', 'Love')}) and the occasion ({occ}) with deep warmth and prestige.
+2. Mentions their aesthetic profile and details (e.g. preferences: {recipient_profile.get('luxury_preference', 'Quiet Luxury')}, hobbies: {', '.join(recipient_profile.get('hobbies', []))}) naturally to show deep understanding.
+3. Announces that the curated luxury recommendations and their signature Memory Box keepsake are ready for reveal.
+4. Keep the response to 3-4 sentences. Sophisticated, warm, and highly personalized.
+
+CLIENT CONTEXT:
+- Recipient Name: {rec}
+- Relationship: {updated_prefs.get("relationship", "Valued Relation")}
+- Luxury Preference: {recipient_profile.get("luxury_preference", "Quiet Luxury")}
+- Hobbies: {", ".join(recipient_profile.get("hobbies", [])) or "Refined Pleasures"}
+"""
+            ai_response = ai_service.generate_concierge_turn(prompt_content, "", user_message)
+            formatted_response = LuxuryFormatter.format_response(ai_response)
+            return formatted_response, updated_prefs, emotion_data, recipient_profile, True, []
 
         # Find next dynamic question
         next_q = self.DYNAMIC_QUESTIONS[min(user_turns_count, len(self.DYNAMIC_QUESTIONS) - 1)]
         
         # PIPELINE ORCHESTRATION WITH OBSERVABILITY
         
-        # Step 1: Context Builder
+        # Step 1: Context Builder (using resolved recipient_id)
         t_start = time.perf_counter()
         context_builder = ContextBuilder(db) if db else None
-        context = context_builder.build_context(user_id) if context_builder else {}
+        context = context_builder.build_context(user_id, recipient_id) if context_builder else {}
         stage_latencies["context_build"] = time.perf_counter() - t_start
 
         # Step 2: Conversation Summary Service
@@ -162,7 +189,6 @@ class ConciergeAgent:
         stage_latencies["validation"] = time.perf_counter() - t_start
 
         if not validation_res["valid"]:
-            # Self-healing fallback
             ai_response = f"I appreciate your response. Let us focus on the details: {next_q['question']}"
 
         # Step 6: Luxury Formatter
