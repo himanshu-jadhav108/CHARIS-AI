@@ -130,3 +130,19 @@ export interface ConsultationHistoryItem {
   message_count: number;
   has_recommendations: boolean;
 }
+
+export interface RecommendationItem {
+  product: Product;
+  match_score: number;
+  luxury_score: number;
+  tailored_reason: string;
+  emotional_meaning: string;
+  story: string;
+  cta_text?: string;
+}
+
+export interface RecommendationResponse {
+  consultation_id?: string;
+  summary: string;
+  top_recommendations: RecommendationItem[];
+}

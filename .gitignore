@@ -70,3 +70,6 @@ Thumbs.db
 .coverage
 htmlcov/
 .pytest_cache/
+
+# TypeScript Build Info Cache
+*.tsbuildinfo

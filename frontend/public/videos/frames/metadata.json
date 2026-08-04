@@ -1,0 +1,22 @@
+{
+  "01": {
+    "frameCount": 240,
+    "fps": 24,
+    "pattern": "/videos/frames/01/frame_%04d.jpg"
+  },
+  "02": {
+    "frameCount": 240,
+    "fps": 24,
+    "pattern": "/videos/frames/02/frame_%04d.jpg"
+  },
+  "03": {
+    "frameCount": 240,
+    "fps": 24,
+    "pattern": "/videos/frames/03/frame_%04d.jpg"
+  },
+  "04": {
+    "frameCount": 240,
+    "fps": 24,
+    "pattern": "/videos/frames/04/frame_%04d.jpg"
+  }
+}

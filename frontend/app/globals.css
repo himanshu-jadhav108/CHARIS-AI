@@ -113,9 +113,12 @@ body {
   color: var(--foreground);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
-  selection-background-color: var(--primary-accent);
-  selection-color: var(--background);
   transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+::selection {
+  background-color: var(--primary-accent);
+  color: var(--background);
 }
 
 /* Custom Luxury Glassmorphism Utilities */
@@ -139,12 +142,14 @@ body {
 .gold-text-gradient {
   background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #C5A059 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .burgundy-text-gradient {
   background: linear-gradient(135deg, #8C1B2D 0%, #4A0E17 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
