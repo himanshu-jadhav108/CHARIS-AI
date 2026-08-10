@@ -27,15 +27,15 @@ export const FAQ: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 relative">
+    <section className="py-24 relative bg-[var(--background)] transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-flex items-center space-x-2 text-gold-400 text-xs font-mono uppercase tracking-widest">
+          <div className="inline-flex items-center space-x-2 text-[var(--primary-accent)] text-xs font-mono uppercase tracking-widest">
             <HelpCircle className="h-4 w-4" />
             <span>Frequent Inquiries</span>
           </div>
-          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-silk-100">
+          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[var(--foreground)]">
             Everything You Need to Know
           </h2>
         </div>
@@ -47,20 +47,20 @@ export const FAQ: React.FC = () => {
               <GlassCard
                 key={idx}
                 onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="cursor-pointer border-gold-400/20 p-6 transition-all duration-300"
+                className="cursor-pointer border-[var(--border-color)] p-6 transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-serif-luxury text-base sm:text-lg font-semibold text-silk-100 pr-4">
+                  <h3 className="font-serif-luxury text-base sm:text-lg font-semibold text-[var(--foreground)] pr-4">
                     {faq.q}
                   </h3>
                   <ChevronDown
-                    className={`h-5 w-5 text-gold-400 transition-transform duration-300 ${
+                    className={`h-5 w-5 text-[var(--primary-accent)] transition-transform duration-300 ${
                       isOpen ? 'rotate-180' : ''
                     }`}
                   />
                 </div>
                 {isOpen && (
-                  <p className="text-xs sm:text-sm text-silk-300/70 mt-4 leading-relaxed font-light border-t border-gold-400/10 pt-4">
+                  <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-4 leading-relaxed font-light border-t border-[var(--border-color)] pt-4">
                     {faq.a}
                   </p>
                 )}

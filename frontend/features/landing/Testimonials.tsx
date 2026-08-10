@@ -30,42 +30,42 @@ export const Testimonials: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 relative bg-obsidian-950/80 border-t border-gold-400/10">
+    <section className="py-24 relative bg-[var(--background)] border-t border-[var(--border-color)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center space-x-2 text-gold-400 text-xs font-mono uppercase tracking-widest">
+          <div className="inline-flex items-center space-x-2 text-[var(--primary-accent)] text-xs font-mono uppercase tracking-widest">
             <Crown className="h-4 w-4" />
             <span>Client Testimonials</span>
           </div>
-          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-silk-100">
+          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[var(--foreground)]">
             Voices of Discerning Patrons
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((r, idx) => (
-            <GlassCard key={idx} className="flex flex-col justify-between p-8 border-gold-400/20">
+            <GlassCard key={idx} className="flex flex-col justify-between p-8 border-[var(--border-color)]">
               <div className="space-y-4">
-                <div className="flex items-center space-x-1 text-gold-400">
+                <div className="flex items-center space-x-1 text-[var(--primary-accent)]">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-gold-400 text-gold-400" />
+                    <Star key={i} className="h-4 w-4 fill-[var(--primary-accent)] text-[var(--primary-accent)]" />
                   ))}
                 </div>
-                <p className="text-xs text-silk-200/90 leading-relaxed italic font-serif-luxury">
-                  "{r.quote}"
+                <p className="text-xs text-[var(--foreground)] leading-relaxed italic font-serif-luxury opacity-90">
+                  &quot;{r.quote}&quot;
                 </p>
               </div>
 
-              <div className="flex items-center space-x-4 pt-6 border-t border-gold-400/10 mt-6">
+              <div className="flex items-center space-x-4 pt-6 border-t border-[var(--border-color)] mt-6">
                 <img
                   src={r.avatar}
                   alt={r.name}
-                  className="h-10 w-10 rounded-full object-cover border border-gold-400/40"
+                  className="h-10 w-10 rounded-full object-cover border border-[var(--border-color)]"
                 />
                 <div>
-                  <h4 className="font-serif-luxury text-sm font-semibold text-silk-100">{r.name}</h4>
-                  <span className="text-[10px] text-gold-400/80 font-mono uppercase tracking-wider block">{r.title} • {r.location}</span>
+                  <h4 className="font-serif-luxury text-sm font-semibold text-[var(--foreground)]">{r.name}</h4>
+                  <span className="text-[10px] text-[var(--primary-accent)] opacity-85 font-mono uppercase tracking-wider block">{r.title} • {r.location}</span>
                 </div>
               </div>
             </GlassCard>

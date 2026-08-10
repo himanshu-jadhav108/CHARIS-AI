@@ -32,19 +32,19 @@ export const Process: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 relative bg-obsidian-950/60 border-t border-b border-gold-400/10">
+    <section className="py-24 relative bg-[var(--card-bg)] border-t border-b border-[var(--border-color)] transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-          <div className="inline-flex items-center space-x-2 text-gold-400 text-xs font-mono uppercase tracking-widest">
+          <div className="inline-flex items-center space-x-2 text-[var(--primary-accent)] text-xs font-mono uppercase tracking-widest">
             <Sparkles className="h-3.5 w-3.5" />
             <span>The CHARIS Experience</span>
           </div>
-          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-silk-100">
+          <h2 className="font-serif-luxury text-3xl sm:text-5xl font-bold text-[var(--foreground)]">
             How True Luxury Giving Works
           </h2>
-          <p className="text-silk-300/70 text-sm sm:text-base font-light">
+          <p className="text-[var(--text-muted)] text-sm sm:text-base font-light">
             A seamless three-stage journey designed with Mayfair concierge warmth and sovereign artificial intelligence.
           </p>
         </div>
@@ -61,21 +61,21 @@ export const Process: React.FC = () => {
             const Icon = step.icon;
             return (
               <motion.div key={idx} variants={fadeInVariants}>
-                <GlassCard className="h-full flex flex-col justify-between p-8 border-gold-400/20 group">
+                <GlassCard className="h-full flex flex-col justify-between p-8 border-[var(--border-color)] group">
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-3xl font-bold gold-text-gradient">{step.num}</span>
-                      <div className="h-12 w-12 rounded-2xl bg-burgundy-800/80 border border-gold-400/30 flex items-center justify-center text-gold-400 group-hover:scale-110 transition-transform">
+                      <div className="h-12 w-12 rounded-2xl bg-[var(--secondary-accent)] border border-[var(--border-color)] flex items-center justify-center text-[var(--primary-accent)] group-hover:scale-110 transition-transform">
                         <Icon className="h-6 w-6" />
                       </div>
                     </div>
                     <div>
-                      <span className="text-[10px] text-gold-300/80 font-mono uppercase tracking-widest">{step.tag}</span>
-                      <h3 className="font-serif-luxury text-xl font-semibold text-silk-100 mt-1 mb-3">{step.title}</h3>
-                      <p className="text-xs text-silk-300/70 leading-relaxed font-light">{step.desc}</p>
+                      <span className="text-[10px] text-[var(--primary-accent)] opacity-80 font-mono uppercase tracking-widest">{step.tag}</span>
+                      <h3 className="font-serif-luxury text-xl font-semibold text-[var(--foreground)] mt-1 mb-3">{step.title}</h3>
+                      <p className="text-xs text-[var(--text-muted)] leading-relaxed font-light">{step.desc}</p>
                     </div>
                   </div>
-                  <div className="pt-6 mt-6 border-t border-gold-400/10 flex items-center justify-between text-[11px] text-gold-400 font-mono">
+                  <div className="pt-6 mt-6 border-t border-[var(--border-color)] flex items-center justify-between text-[11px] text-[var(--primary-accent)] font-mono">
                     <span>STAGE {idx + 1} OF 3</span>
                     <span className="group-hover:translate-x-1 transition-transform">EXPLORE →</span>
                   </div>

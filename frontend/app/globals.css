@@ -7,104 +7,72 @@
 :root {
   --background: #0B0B0E;
   --foreground: #FAFAFC;
+  --text-muted: rgba(243, 243, 247, 0.7);
   --primary-accent: #D4AF37;
-  --secondary-accent: #4A0E17;
-  --card-bg: rgba(18, 18, 24, 0.65);
+  --secondary-accent: #121218;
+  --card-bg: rgba(18, 18, 24, 0.7);
+  --border-color: rgba(212, 175, 55, 0.2);
+  --border-hover: rgba(212, 175, 55, 0.4);
 }
 
 /* Classic Luxury: Obsidian Gold & White */
 .theme-Classic-Luxury {
   --background: #0B0B0E;
   --foreground: #FAFAFC;
+  --text-muted: rgba(243, 243, 247, 0.7);
   --primary-accent: #D4AF37;
-  --secondary-accent: #1A1A24;
+  --secondary-accent: #121218;
   --card-bg: rgba(18, 18, 24, 0.7);
+  --border-color: rgba(212, 175, 55, 0.2);
+  --border-hover: rgba(212, 175, 55, 0.4);
 }
 
 /* Royal Burgundy: Deep Burgundy, Plum, Gold & Cream */
 .theme-Royal-Burgundy {
   --background: #1A0407;
   --foreground: #FDF8EA;
+  --text-muted: rgba(253, 248, 234, 0.75);
   --primary-accent: #C5A059;
-  --secondary-accent: #4A0E17;
+  --secondary-accent: #2D080E;
   --card-bg: rgba(45, 8, 14, 0.65);
+  --border-color: rgba(197, 160, 89, 0.25);
+  --border-hover: rgba(197, 160, 89, 0.5);
 }
 
 /* Midnight Black: Matte Black, Obsidian, Silver & White */
 .theme-Midnight-Black {
   --background: #050505;
   --foreground: #FAFAFC;
+  --text-muted: rgba(229, 229, 237, 0.7);
   --primary-accent: #E5E5ED;
   --secondary-accent: #121212;
   --card-bg: rgba(18, 18, 18, 0.85);
+  --border-color: rgba(229, 229, 237, 0.2);
+  --border-hover: rgba(229, 229, 237, 0.4);
 }
 
 /* Ivory Gold: Warm Ivory, Champagne Gold, Soft Gray & Silk White */
 .theme-Ivory-Gold {
   --background: #FAF8F5;
-  --foreground: #2C2C30;
-  --primary-accent: #C5A059;
-  --secondary-accent: #E5E5ED;
-  --card-bg: rgba(255, 255, 255, 0.9);
+  --foreground: #1A1A1E;
+  --text-muted: rgba(50, 50, 60, 0.75);
+  --primary-accent: #B38E38;
+  --secondary-accent: #EAE6DF;
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --border-color: rgba(179, 142, 56, 0.3);
+  --border-hover: rgba(179, 142, 56, 0.6);
 }
 
 /* Elegant Light: Silk White, Light Cream, Soft Gold & Charcoal */
 .theme-Elegant-Light {
   --background: #F4F3EF;
-  --foreground: #1E1E24;
-  --primary-accent: #A38140;
-  --secondary-accent: #EAE8E2;
+  --foreground: #141418;
+  --text-muted: rgba(40, 40, 48, 0.75);
+  --primary-accent: #927131;
+  --secondary-accent: #E3E1DA;
   --card-bg: rgba(255, 255, 255, 0.95);
-}
-
-/* Light Theme Color Overrides */
-.theme-Ivory-Gold,
-.theme-Elegant-Light {
-  color: var(--foreground);
-}
-
-.theme-Ivory-Gold .text-silk-100,
-.theme-Elegant-Light .text-silk-100 {
-  color: #1A1A1E !important;
-}
-
-.theme-Ivory-Gold .text-silk-200,
-.theme-Elegant-Light .text-silk-200 {
-  color: #2C2C30 !important;
-}
-
-.theme-Ivory-Gold .text-silk-300,
-.theme-Elegant-Light .text-silk-300 {
-  color: #4A4A50 !important;
-}
-
-.theme-Ivory-Gold .text-silk-300\/75,
-.theme-Elegant-Light .text-silk-300\/75,
-.theme-Ivory-Gold .text-silk-300\/70,
-.theme-Elegant-Light .text-silk-300\/70 {
-  color: rgba(74, 74, 80, 0.75) !important;
-}
-
-.theme-Ivory-Gold .bg-obsidian-950,
-.theme-Elegant-Light .bg-obsidian-950,
-.theme-Ivory-Gold .bg-obsidian-900,
-.theme-Elegant-Light .bg-obsidian-900 {
-  background-color: var(--background) !important;
-}
-
-.theme-Ivory-Gold .bg-obsidian-850,
-.theme-Elegant-Light .bg-obsidian-850 {
-  background-color: var(--secondary-accent) !important;
-}
-
-.theme-Ivory-Gold .text-gold-300,
-.theme-Elegant-Light .text-gold-300 {
-  color: var(--primary-accent) !important;
-}
-
-.theme-Ivory-Gold .border-gold-400\/20,
-.theme-Elegant-Light .border-gold-400\/20 {
-  border-color: rgba(197, 160, 89, 0.3) !important;
+  --border-color: rgba(146, 113, 49, 0.3);
+  --border-hover: rgba(146, 113, 49, 0.6);
 }
 
 

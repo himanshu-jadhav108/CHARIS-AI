@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Sparkles, Crown, Compass, Bookmark, MessageSquare, User, Menu, X } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -23,26 +24,27 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-obsidian-950/75 border-b border-gold-400/20 transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-[var(--card-bg)] border-b border-[var(--border-color)] text-[var(--foreground)] transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative h-10 w-10 rounded-full bg-burgundy-800 border border-gold-400/50 flex items-center justify-center shadow-gold-glow group-hover:scale-105 transition-transform duration-300 overflow-hidden">
-              <img 
+              <Image 
                 src="/logo.png" 
                 alt="CHARIS Logo" 
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                className="h-full w-full object-cover z-10" 
+                fill
+                sizes="40px"
+                className="object-cover z-10" 
               />
-              <Crown className="h-5 w-5 text-gold-400 absolute" />
+              <Crown className="h-5 w-5 text-gold-400 absolute z-20" />
             </div>
             <div className="flex flex-col">
               <span className="font-serif-luxury text-2xl font-bold tracking-widest gold-text-gradient">
                 CHARIS
               </span>
-              <span className="text-[10px] tracking-[0.25em] text-gold-300/70 uppercase">
+              <span className="text-[10px] tracking-[0.25em] text-[var(--primary-accent)] opacity-80 uppercase font-mono">
                 Luxury AI Concierge
               </span>
             </div>
@@ -60,7 +62,7 @@ export const Navbar: React.FC = () => {
                   className={`flex items-center space-x-2 px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 ${
                     isActive
                       ? 'bg-burgundy-700/60 text-gold-300 border border-gold-400/40 shadow-gold-glow'
-                      : 'text-silk-300/70 hover:text-gold-300 hover:bg-obsidian-800/60'
+                      : 'text-[var(--text-muted)] hover:text-[var(--primary-accent)] hover:bg-[var(--secondary-accent)]'
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -76,7 +78,7 @@ export const Navbar: React.FC = () => {
             {/* Bookmarks Counter */}
             <Link
               href="/catalog?bookmarked=true"
-              className="relative p-2.5 rounded-full bg-obsidian-850 border border-gold-400/20 text-silk-300/80 hover:text-gold-300 hover:border-gold-400/40 transition-colors mr-2"
+              className="relative p-2.5 rounded-full bg-[var(--secondary-accent)] border border-[var(--border-color)] text-[var(--foreground)] hover:text-[var(--primary-accent)] hover:border-[var(--border-hover)] transition-colors mr-2"
               title="Saved Gifts"
             >
               <Bookmark className="h-4 w-4" />
@@ -92,7 +94,8 @@ export const Navbar: React.FC = () => {
               <select
                 value={theme}
                 onChange={(e) => setTheme(e.target.value as any)}
-                className="bg-obsidian-850 text-gold-300 text-[10px] uppercase tracking-wider font-mono border border-gold-400/30 rounded-full px-3.5 py-2 focus:outline-none focus:border-gold-400/60 cursor-pointer"
+                suppressHydrationWarning
+                className="bg-[var(--secondary-accent)] text-[var(--primary-accent)] text-[10px] uppercase tracking-wider font-mono border border-[var(--border-color)] rounded-full px-3.5 py-2 focus:outline-none focus:border-[var(--border-hover)] cursor-pointer"
               >
                 <option value="Classic-Luxury">Classic</option>
                 <option value="Royal-Burgundy">Burgundy</option>
@@ -104,15 +107,17 @@ export const Navbar: React.FC = () => {
 
             {/* Auth / User Badge */}
             {isAuthenticated && user ? (
-              <div className="flex items-center space-x-3 bg-obsidian-850/80 p-1.5 pr-4 rounded-full border border-gold-400/30">
-                <img
+              <div className="flex items-center space-x-3 bg-[var(--secondary-accent)] p-1.5 pr-4 rounded-full border border-[var(--border-color)]">
+                <Image
                   src={user.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"}
                   alt={user.full_name}
-                  className="h-8 w-8 rounded-full object-cover border border-gold-400/40"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover border border-gold-400/40"
                 />
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-semibold text-silk-100 line-clamp-1">{user.full_name}</span>
-                  <span className="text-[9px] text-gold-400/90 tracking-wider uppercase font-mono">{user.tier}</span>
+                  <span className="text-xs font-semibold text-[var(--foreground)] line-clamp-1">{user.full_name}</span>
+                  <span className="text-[9px] text-[var(--primary-accent)] tracking-wider uppercase font-mono">{user.tier}</span>
                 </div>
               </div>
             ) : (
@@ -129,7 +134,7 @@ export const Navbar: React.FC = () => {
           <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-lg text-silk-300 hover:text-gold-400"
+              className="p-2.5 rounded-lg text-[var(--foreground)] hover:text-[var(--primary-accent)]"
             >
               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -140,7 +145,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden glass-panel border-t border-gold-400/20 px-4 pt-3 pb-6 space-y-3">
+        <div className="md:hidden glass-panel border-t border-[var(--border-color)] px-4 pt-3 pb-6 space-y-3">
           {navLinks.map((link) => {
             const Icon = link.icon;
             return (
@@ -148,9 +153,9 @@ export const Navbar: React.FC = () => {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-silk-200 hover:bg-burgundy-800/50 hover:text-gold-300"
+                className="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-[var(--foreground)] hover:bg-[var(--secondary-accent)] hover:text-[var(--primary-accent)]"
               >
-                <Icon className="h-4 w-4 text-gold-400" />
+                <Icon className="h-4 w-4 text-[var(--primary-accent)]" />
                 <span>{link.label}</span>
               </Link>
             );
