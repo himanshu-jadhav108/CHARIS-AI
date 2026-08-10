@@ -15,11 +15,9 @@
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.344.0",
     "zustand": "^4.5.2",
-    "@tanstack/react-query": "^5.24.1",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.1",
     "canvas-confetti": "^1.9.2",
-    "@supabase/supabase-js": "^2.39.7",
     "gsap": "^3.12.5",
     "lenis": "^1.1.9"
   },

@@ -2,6 +2,10 @@ import { Product, RecommendationResponse, ConsultationHistoryItem } from '@/type
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
 
+if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_API_BASE_URL) {
+  console.error('[CHARIS CONFIG ERROR] NEXT_PUBLIC_API_BASE_URL is missing in production environment. Requests will default to localhost:8000.');
+}
+
 export async function fetchProducts(category?: string, search?: string): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
@@ -12,7 +16,11 @@ export async function fetchProducts(category?: string, search?: string): Promise
     if (!res.ok) throw new Error('Failed to fetch products');
     return await res.json();
   } catch (err) {
-    console.warn("API offline - using dummy client catalog fallback");
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[CHARIS API ERROR] Failed to connect to backend server at ' + API_BASE, err);
+    } else {
+      console.warn("API offline - using dummy client catalog fallback");
+    }
     return [];
   }
 }

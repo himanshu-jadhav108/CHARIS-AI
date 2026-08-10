@@ -17,10 +17,10 @@ export const Navbar: React.FC = () => {
   const { theme, setTheme } = useThemeStore();
 
   const navLinks = [
-    { href: '/consult', label: 'AI Concierge', icon: Sparkles },
-    { href: '/dashboard', label: 'Dashboard', icon: Crown },
     { href: '/catalog', label: 'Luxury Vault', icon: Compass },
+    { href: '/consult', label: 'AI Concierge', icon: Sparkles },
     { href: '/messages', label: 'Gift Message Artistry', icon: MessageSquare },
+    ...(isAuthenticated ? [{ href: '/dashboard', label: 'Dashboard', icon: Crown }] : []),
   ];
 
   return (

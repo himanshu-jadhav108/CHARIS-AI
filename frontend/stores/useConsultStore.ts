@@ -62,6 +62,9 @@ export const useConsultStore = create<ConsultState>((set, get) => ({
       const token = user?.access_token || 'active_session_token';
       const userId = user?.id || 'guest_vip';
       const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+      if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PUBLIC_API_BASE_URL) {
+        console.error('[CHARIS CONFIG ERROR] NEXT_PUBLIC_API_BASE_URL is missing in production environment.');
+      }
 
       const res = await fetch(`${API_BASE}/chat/message`, {
         method: 'POST',
