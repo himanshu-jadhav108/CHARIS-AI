@@ -53,7 +53,7 @@ export default function AuthPage() {
           
           {/* Gifting Quote */}
           <p className="text-xs text-gold-300/80 italic font-serif-luxury max-w-xs mx-auto">
-            "The most memorable gifts are chosen with understanding, not impulse."
+            &quot;The most memorable gifts are chosen with understanding, not impulse.&quot;
           </p>
         </div>
 

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Crown, Sparkles, Plus, Clock, Bookmark, Calendar, ArrowRight, UserPlus, Heart, BookOpen, Compass, Award } from 'lucide-react';
 import { GlassCard } from '@/components/common/GlassCard';
@@ -235,7 +236,7 @@ export default function DashboardPage() {
         
         {/* Approved Logo Watermark inside Banner */}
         <div className="absolute -right-10 -bottom-10 opacity-5 h-48 w-48 pointer-events-none">
-          <img src="/logo.png" alt="Watermark" className="h-full w-full object-contain" />
+          <Image src="/logo.png" alt="Watermark" fill className="object-contain" />
         </div>
 
         <div className="space-y-3 relative z-10">
@@ -352,7 +353,7 @@ export default function DashboardPage() {
                       </div>
 
                       <p className="text-xs text-silk-300/70 leading-relaxed italic">
-                        "{rec.lifestyle}"
+                        &quot;{rec.lifestyle}&quot;
                       </p>
 
                       <div className="grid grid-cols-2 gap-2 text-[10px] font-mono border-t border-gold-400/10 pt-3">
@@ -415,7 +416,7 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {bookmarkedProducts.map((p) => (
                   <div key={p.id} className="flex items-center space-x-3 p-2.5 rounded-xl bg-obsidian-850 border border-gold-400/20">
-                    <img src={p.image} alt={p.name} className="h-10 w-10 rounded-lg object-cover border border-gold-400/30" />
+                    <Image src={p.image} alt={p.name} width={40} height={40} className="rounded-lg object-cover border border-gold-400/30" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-serif-luxury text-xs font-bold text-silk-100 truncate">{p.name}</h4>
                       <span className="text-[10px] font-mono text-gold-400">₹{p.price.toLocaleString('en-IN')}</span>
@@ -490,7 +491,7 @@ export default function DashboardPage() {
                 <div className="space-y-3">
                   <div>
                     <span className="text-[9px] font-mono text-silk-300/40 uppercase block">Luxury Preference Style</span>
-                    <span className="text-silk-200 font-serif-luxury italic">"{selectedRecipient.luxury_style}"</span>
+                    <span className="text-silk-200 font-serif-luxury italic">&quot;{selectedRecipient.luxury_style}&quot;</span>
                   </div>
                   <div>
                     <span className="text-[9px] font-mono text-silk-300/40 uppercase block">Interests & Fields</span>

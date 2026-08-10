@@ -91,7 +91,7 @@ export const GiftCard: React.FC<GiftCardProps> = ({ item, rank, onOpenProduct })
             <span>Tailored Concierge Rationale</span>
           </div>
           <p className="text-xs text-silk-200/90 italic font-serif-luxury">
-            "{tailored_reason}"
+            &quot;{tailored_reason}&quot;
           </p>
           <div className="pt-2 border-t border-gold-400/10 flex items-center space-x-1.5 text-[11px] text-gold-300/80">
             <Heart className="h-3 w-3 text-burgundy-500 shrink-0" />

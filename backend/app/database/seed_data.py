@@ -337,6 +337,11 @@ def seed_database():
     
     db = SessionLocal()
     try:
+        # Avoid double-seeding and database write locks in multi-worker environments
+        if db.query(Product).count() >= 50:
+            print("Database already seeded with 50 products. Skipping seeding.")
+            return
+            
         db.query(Product).delete()
         products_data = generate_full_50_hybrid_products()
         print(f"Seeding {len(products_data)} hybrid luxury products with INR prices...")

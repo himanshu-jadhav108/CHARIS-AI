@@ -105,7 +105,7 @@ export const MemoryBoxCard: React.FC<MemoryBoxCardProps> = ({
               <span>Why This Gift Matters</span>
             </div>
             <p className="text-silk-200/90 font-serif-luxury italic">
-              "{memoryBox.why_this_gift_matters}"
+              &quot;{memoryBox.why_this_gift_matters}&quot;
             </p>
           </div>
 
@@ -115,7 +115,7 @@ export const MemoryBoxCard: React.FC<MemoryBoxCardProps> = ({
               <span>Emotional Narrative</span>
             </div>
             <p className="text-silk-200/90 font-serif-luxury italic">
-              "{memoryBox.emotional_story}"
+              &quot;{memoryBox.emotional_story}&quot;
             </p>
           </div>
 

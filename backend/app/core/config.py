@@ -22,9 +22,10 @@ class Settings(BaseModel):
     SUPABASE_JWT_SECRET: str = os.getenv("SUPABASE_JWT_SECRET", "")
     
     CORS_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://charis-luxury.vercel.app"
+        origin.strip() for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:3000,http://127.0.0.1:3000,https://charis-luxury.vercel.app"
+        ).split(",")
     ]
 
 settings = Settings()

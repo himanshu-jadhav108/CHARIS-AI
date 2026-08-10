@@ -98,7 +98,7 @@ export const CuratedExperienceCard: React.FC<CuratedExperienceCardProps> = ({
                   <span>Why This Fits {recipientName}</span>
                 </div>
                 <p className="text-xs text-silk-200/90 italic font-serif-luxury">
-                  "{tailored_reason}"
+                  &quot;{tailored_reason}&quot;
                 </p>
               </div>
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Crown, Sparkles, Gem } from 'lucide-react';
 import { ProductGrid } from '@/features/product/ProductGrid';
@@ -9,7 +9,7 @@ import { fetchProducts } from '@/services/api';
 import { Product } from '@/types';
 import { useBookmarkStore } from '@/stores/useBookmarkStore';
 
-export default function CatalogPage() {
+function CatalogContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -66,5 +66,18 @@ export default function CatalogPage() {
       />
 
     </div>
+  );
+}
+
+export default function CatalogPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center py-24 space-y-3">
+        <Sparkles className="h-8 w-8 text-gold-400 animate-spin mx-auto" />
+        <p className="text-xs font-mono text-gold-300">Accessing Vault Dossiers...</p>
+      </div>
+    }>
+      <CatalogContent />
+    </Suspense>
   );
 }
