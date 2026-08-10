@@ -1,22 +1,22 @@
 {
   "01": {
-    "frameCount": 240,
+    "frameCount": 75,
     "fps": 24,
-    "pattern": "/videos/frames/01/frame_%04d.jpg"
+    "pattern": "/videos/frames/01/frame_%04d.webp"
   },
   "02": {
-    "frameCount": 240,
+    "frameCount": 75,
     "fps": 24,
-    "pattern": "/videos/frames/02/frame_%04d.jpg"
+    "pattern": "/videos/frames/02/frame_%04d.webp"
   },
   "03": {
-    "frameCount": 240,
+    "frameCount": 75,
     "fps": 24,
-    "pattern": "/videos/frames/03/frame_%04d.jpg"
+    "pattern": "/videos/frames/03/frame_%04d.webp"
   },
   "04": {
-    "frameCount": 240,
+    "frameCount": 75,
     "fps": 24,
-    "pattern": "/videos/frames/04/frame_%04d.jpg"
+    "pattern": "/videos/frames/04/frame_%04d.webp"
   }
 }
