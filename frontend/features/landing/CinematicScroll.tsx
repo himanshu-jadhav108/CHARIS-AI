@@ -36,11 +36,18 @@ const CHAPTERS: Chapter[] = [
   },
 ];
 
-const DEFAULT_FRAME_COUNTS: Record<string, number> = {
-  "01": 120, // default fallbacks in case metadata.json is not found
-  "02": 120,
-  "03": 120,
-  "04": 120,
+/*
+ * DESIGN DECISION: Theme Scoping for CinematicScroll
+ * The pre-rendered frame canvas is visually graded in a dark, atmospheric palette.
+ * To maintain maximum visual contrast and cinematic depth, CinematicScroll is intentionally
+ * scoped to remain dark (#050505) across all selected luxury themes.
+ */
+
+const FRAME_CONFIG: Record<string, { frameCount: number; pattern: string }> = {
+  "01": { frameCount: 75, pattern: "/videos/frames/01/frame_%04d.webp" },
+  "02": { frameCount: 75, pattern: "/videos/frames/02/frame_%04d.webp" },
+  "03": { frameCount: 75, pattern: "/videos/frames/03/frame_%04d.webp" },
+  "04": { frameCount: 75, pattern: "/videos/frames/04/frame_%04d.webp" },
 };
 
 const LOADING_MESSAGES = [
@@ -59,8 +66,13 @@ export const CinematicScroll: React.FC = () => {
   const [useVideoFallback, setUseVideoFallback] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
 
-  // Frame counts loaded from metadata or default
-  const [frameCounts, setFrameCounts] = useState<Record<string, number>>(DEFAULT_FRAME_COUNTS);
+  // Embedded build-time frame counts to eliminate metadata race conditions
+  const frameCounts: Record<string, number> = {
+    "01": FRAME_CONFIG["01"].frameCount,
+    "02": FRAME_CONFIG["02"].frameCount,
+    "03": FRAME_CONFIG["03"].frameCount,
+    "04": FRAME_CONFIG["04"].frameCount,
+  };
   const totalFrames = Object.values(frameCounts).reduce((a, b) => a + b, 0);
 
   // Preloading & Loading state
@@ -111,6 +123,24 @@ export const CinematicScroll: React.FC = () => {
     };
   }, []);
 
+  // Cleanup image cache on unmount to release memory and cancel network requests
+  useEffect(() => {
+    return () => {
+      for (const ch of CHAPTERS) {
+        const chapterCache = loadedImagesRef.current[ch.id];
+        if (chapterCache) {
+          for (const key of Object.keys(chapterCache)) {
+            const img = chapterCache[Number(key)];
+            if (img) {
+              img.src = '';
+            }
+          }
+          loadedImagesRef.current[ch.id] = {};
+        }
+      }
+    };
+  }, []);
+
   // Loading messages loop
   useEffect(() => {
     if (initialLoadComplete) return;
@@ -120,36 +150,11 @@ export const CinematicScroll: React.FC = () => {
     return () => clearInterval(interval);
   }, [initialLoadComplete]);
 
-  // Load actual metadata.json if available
+  // Preload initial frames (first 25 frames of chapter 1)
   useEffect(() => {
     if (useVideoFallback || prefersReducedMotion) return;
 
-    const fetchMetadata = async () => {
-      try {
-        const res = await fetch('/videos/frames/metadata.json?v=1');
-        if (!res.ok) throw new Error("Metadata not found");
-        const data = await res.json();
-        const counts: Record<string, number> = {};
-        for (const ch of CHAPTERS) {
-          if (data[ch.id] && typeof data[ch.id].frameCount === 'number') {
-            counts[ch.id] = data[ch.id].frameCount;
-          } else {
-            counts[ch.id] = DEFAULT_FRAME_COUNTS[ch.id];
-          }
-        }
-        setFrameCounts(counts);
-      } catch (err) {
-        console.warn("Failed to load /videos/frames/metadata.json. Using standard frame counts.", err);
-      }
-    };
-    fetchMetadata();
-  }, [useVideoFallback, prefersReducedMotion]);
-
-  // Preload initial frames (first 35 frames of chapter 1)
-  useEffect(() => {
-    if (useVideoFallback || prefersReducedMotion) return;
-
-    const framesToPreload = 35;
+    const framesToPreload = 25;
     let loadedCount = 0;
 
     const checkComplete = () => {
@@ -166,19 +171,18 @@ export const CinematicScroll: React.FC = () => {
             const ctx = canvasRef.current.getContext('2d');
             if (ctx) drawImageCover(ctx, firstImg, canvasRef.current.width, canvasRef.current.height);
           }
-        }, 800);
+        }, 400);
       }
     };
 
     for (let i = 0; i < framesToPreload; i++) {
       const img = new Image();
       const frameNum = String(i + 1).padStart(4, '0');
-      img.src = `/videos/frames/01/frame_${frameNum}.jpg?v=1`;
+      img.src = FRAME_CONFIG["01"].pattern.replace("%04d", frameNum);
       img.onload = checkComplete;
       img.onerror = () => {
         errorCountRef.current++;
         if (errorCountRef.current > 5) {
-          // If files don't exist (e.g. extraction script hasn't run), trigger video fallback
           setUseVideoFallback(true);
         }
         checkComplete();
@@ -263,7 +267,7 @@ export const CinematicScroll: React.FC = () => {
     if (!chapterCache[localIndex]) {
       const img = new Image();
       const frameNum = String(localIndex + 1).padStart(4, '0');
-      img.src = `/videos/frames/${chapterId}/frame_${frameNum}.jpg?v=1`;
+      img.src = FRAME_CONFIG[chapterId].pattern.replace("%04d", frameNum);
       img.onerror = () => {
         errorCountRef.current++;
         if (errorCountRef.current > 15) {
@@ -289,7 +293,7 @@ export const CinematicScroll: React.FC = () => {
     const chapterCache = loadedImagesRef.current[chapterId];
     if (!chapterCache) return null;
 
-    const maxOffset = 30;
+    const maxOffset = 15;
     for (let offset = 1; offset <= maxOffset; offset++) {
       if (localIndex - offset >= 0) {
         const img = chapterCache[localIndex - offset];
@@ -305,8 +309,8 @@ export const CinematicScroll: React.FC = () => {
 
   // Preload sliding window & garbage collect distant frames
   const manageCacheWindow = (currentGlobalIndex: number) => {
-    const PRELOAD_AHEAD = 45;
-    const PRELOAD_BEHIND = 15;
+    const PRELOAD_AHEAD = 25;
+    const PRELOAD_BEHIND = 10;
 
     const minGlobal = Math.max(0, currentGlobalIndex - PRELOAD_BEHIND);
     const maxGlobal = Math.min(totalFrames - 1, currentGlobalIndex + PRELOAD_AHEAD);
@@ -360,7 +364,7 @@ export const CinematicScroll: React.FC = () => {
     handleResize();
 
     return () => window.removeEventListener('resize', handleResize);
-  }, [useVideoFallback, prefersReducedMotion, frameCounts]);
+  }, [useVideoFallback, prefersReducedMotion]);
 
   // Global Lenis Smooth Scrolling Setup
   useEffect(() => {
@@ -399,13 +403,13 @@ export const CinematicScroll: React.FC = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
-    // Single pinned master timeline
+    // Single pinned master timeline with scrub: true (Lenis handles smooth scroll interpolation)
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: triggerRef.current,
         start: "top top",
         end: "+=300%",
-        scrub: 0.5,
+        scrub: true,
         pin: true,
         pinSpacing: true,
         onUpdate: (self) => {
@@ -426,59 +430,59 @@ export const CinematicScroll: React.FC = () => {
       },
     });
 
-    // Animate text layers independently with 3D perspective (timed elegantly along the 4 chapters)
-    // Chapter 1 (0% to 25% of scroll progress)
+    // Caption timeline normalized strictly to explicit fractions of 1.0 total duration
+    // Chapter 1 (0% to 22%)
     tl.fromTo("#text-ch-01",
       { opacity: 0, scale: 0.85, y: 50, z: -150, rotateX: 15, filter: "blur(12px)" },
-      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.2, ease: "power2.out" },
+      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.05, ease: "power2.out" },
       0.02
     ).to("#text-ch-01",
-      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.2, ease: "power2.in" },
-      0.20
+      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.05, ease: "power2.in" },
+      0.18
     );
 
-    // Chapter 2 (25% to 50% of scroll progress)
+    // Chapter 2 (25% to 47%)
     tl.fromTo("#text-ch-02",
       { opacity: 0, scale: 0.85, y: 50, z: -150, rotateX: 15, filter: "blur(12px)" },
-      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.2, ease: "power2.out" },
-      0.27
+      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.05, ease: "power2.out" },
+      0.26
     ).to("#text-ch-02",
-      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.2, ease: "power2.in" },
-      0.45
+      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.05, ease: "power2.in" },
+      0.42
     );
 
-    // Chapter 3 (50% to 75% of scroll progress)
+    // Chapter 3 (50% to 71%)
     tl.fromTo("#text-ch-03",
       { opacity: 0, scale: 0.85, y: 50, z: -150, rotateX: 15, filter: "blur(12px)" },
-      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.2, ease: "power2.out" },
-      0.52
+      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.05, ease: "power2.out" },
+      0.50
     ).to("#text-ch-03",
-      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.2, ease: "power2.in" },
-      0.70
+      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.05, ease: "power2.in" },
+      0.66
     );
 
-    // Chapter 4 (75% to 100% of scroll progress)
+    // Chapter 4 (74% to 90%)
     tl.fromTo("#text-ch-04",
       { opacity: 0, scale: 0.85, y: 50, z: -150, rotateX: 15, filter: "blur(12px)" },
-      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.2, ease: "power2.out" },
-      0.77
+      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, filter: "blur(0px)", duration: 0.05, ease: "power2.out" },
+      0.74
     ).to("#text-ch-04",
-      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.15, ease: "power2.in" },
-      0.92
+      { opacity: 0, scale: 1.15, y: -50, z: 150, rotateX: -15, filter: "blur(12px)", duration: 0.04, ease: "power2.in" },
+      0.86
     );
 
-    // Final CTA button
+    // Final CTA button (91% to 1.00)
     tl.fromTo("#text-cta",
       { opacity: 0, scale: 0.88, y: 40, z: -100, rotateX: 10 },
-      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, duration: 0.15, ease: "power2.out" },
-      0.93
+      { opacity: 1, scale: 1, y: 0, z: 0, rotateX: 0, duration: 0.07, ease: "power2.out" },
+      0.91
     );
 
     return () => {
       tl.kill();
       ScrollTrigger.getAll().forEach((t) => t.kill(true));
     };
-  }, [initialLoadComplete, useVideoFallback, prefersReducedMotion, frameCounts]);
+  }, [initialLoadComplete, useVideoFallback, prefersReducedMotion]);
 
   // Mobile Autoplay Video sequence triggers
   useEffect(() => {
